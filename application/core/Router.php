@@ -4,25 +4,29 @@ namespace application\core;
 
 use application\core\View;
 
-class Router {
+class Router
+{
 
     protected $routes = [];
     public $params = [];
-    
-    public function __construct() {
+
+    public function __construct()
+    {
         $arr = require 'application/config/routes.php';
         foreach ($arr as $key => $val) {
             $this->add($key, $val);
         }
     }
 
-    public function add($route, $params) {
+    public function add($route, $params)
+    {
         $route = preg_replace('/{([a-z]+):([^\}]+)}/', '(?P<\1>\2)', $route);
-        $route = '#^'.$route.'$#';
+        $route = '#^' . $route . '$#';
         $this->routes[$route] = $params;
     }
 
-    public function match() {
+    public function match()
+    {
         $url = explode('?', $_SERVER['REQUEST_URI']);
         $url = trim($url[0], '/');
         foreach ($this->routes as $route => $params) {
@@ -42,14 +46,15 @@ class Router {
         return false;
     }
 
-    public function run(){
+    public function run()
+    {
         if ($this->match()) {
-            $path = 'application\controllers\\'.ucfirst($this->params['controller']).'Controller';
+            $path = 'application\controllers\\' . ucfirst($this->params['controller']) . 'Controller';
             if (class_exists($path)) {
-                $action = $this->params['action'].'Action';
+                $action = $this->params['action'] . 'Action';
                 if (method_exists($path, $action)) {
                     $controller = new $path($this->params);
-                    
+
                     $controller->$action();
                 } else {
                     View::errorCode(404);
@@ -61,5 +66,4 @@ class Router {
             View::errorCode(404);
         }
     }
-
 }

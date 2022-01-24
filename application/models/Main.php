@@ -2,19 +2,17 @@
 
 namespace application\models;
 
-
-
 use application\core\Model;
 use ORM;
 
 class Main extends Model
 {
-   //получение данных из главной таблицы medals
-	public function getMainCountrysName($order)
-    {
-      return ORM::forTable('countries')
-        ->rawQuery(
-                  "SELECT name, countries.id,
+  //получение данных из главной таблицы medals
+  public function getMainCountrysName($order)
+  {
+    return ORM::forTable('countries')
+      ->rawQuery(
+        "SELECT name, countries.id,
                   ROW_NUMBER() OVER w AS nrow,
                   COALESCE(SUM(medal_id = 1),0) as gold,
                   COALESCE(SUM(medal_id = 2),0) as silver,
@@ -25,7 +23,7 @@ class Main extends Model
                   GROUP BY country_id
                   WINDOW w AS (ORDER BY 'gold')
                   ORDER BY " . $order
-                  )
-        ->findMany();
-    }
+      )
+      ->findMany();
+  }
 }

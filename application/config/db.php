@@ -4,5 +4,5 @@ return [
 	'host' => 'localhost',
 	'name' => 'olympicdb',
 	'user' => 'root',
-	'password' => 'root',
+	'password' => '',
 ];
